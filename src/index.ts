@@ -4,6 +4,7 @@ import * as fs from "fs";
 
 import { Report, PullRequest } from "./models";
 import { calculateCoverage, reportToString } from "./report-utils";
+import { Octokit } from "./types";
 
 export async function run() {
     try {
@@ -23,6 +24,7 @@ export async function run() {
         const octokit = github.getOctokit(inputs.token);
         const files = await getPullRequestFiles(octokit, pr);
         const report = loadReportFromSummaryFile(inputs.path, files);
+        if (!report) return;
         const coverage = reportToString(report, inputs.title);
 
         await updatePullRequestDescription(pr, octokit, coverage);
@@ -65,7 +67,7 @@ function getPullRequestDetails(): PullRequest {
 
 async function updatePullRequestDescription(
     pr: PullRequest,
-    octokit,
+    octokit: Octokit,
     coverage: string
 ) {
     const params = {
@@ -76,7 +78,7 @@ async function updatePullRequestDescription(
     const res = await octokit.pulls.get(params);
     await octokit.pulls.update({
         ...params,
-        body: buildPullRequestDescription(res.data.body, coverage),
+        body: buildPullRequestDescription(res.data.body ?? "", coverage),
     });
 }
 
@@ -95,7 +97,7 @@ function buildPullRequestDescription(body: string, coverage: string) {
     return body;
 }
 
-async function getPullRequestFiles(octokit, pr: PullRequest) {
+async function getPullRequestFiles(octokit: Octokit, pr: PullRequest) {
     const compareResp = await octokit.repos.compareCommits({
         base: pr.base,
         head: pr.head,
@@ -113,7 +115,10 @@ async function getPullRequestFiles(octokit, pr: PullRequest) {
         .map((f) => f.filename);
 }
 
-function loadReportFromSummaryFile(path: string, files: string[]): Report {
+function loadReportFromSummaryFile(
+    path: string,
+    files: string[]
+): Report | null {
     const data = fs.readFileSync(
         `${process.env.GITHUB_WORKSPACE}/${path}`,
         "utf8"

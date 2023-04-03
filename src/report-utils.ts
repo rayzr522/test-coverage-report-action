@@ -24,11 +24,10 @@ export function addCoverageReport(
     return res;
 }
 
-
 export function calculateCoverage(
     changedFiles: string[],
     report: { [key: string]: Report }
-): Report {
+): Report | null {
     const output: Report[] = [];
     const reports = reportToArray(report);
 
@@ -54,8 +53,8 @@ export function reportToArray(report: { [key: string]: Report }): ReportItem[] {
     const reports: ReportItem[] = [];
     if (!report) {
         return reports;
-    } 
-    
+    }
+
     const props = Object.getOwnPropertyNames(report);
 
     props.forEach((prop) => {
@@ -69,10 +68,9 @@ export function reportToArray(report: { [key: string]: Report }): ReportItem[] {
 }
 
 export function reportToString(report: Report, title: string): string {
-
     if (!report) {
         return `### ${title}
-        None of the files form test coverage report were touched•`
+        None of the files form test coverage report were touched•`;
     }
 
     const coverage = `### ${title}
