@@ -5,29 +5,34 @@ This action will report test coverage summary of the pull-request touched files 
 ## Inputs
 
 ### `token`
+
 **Required** The GitHub authentication token (workflows automatically set this for you, nothing needed here)
 
 ### `path`
+
 **Required** Path to the Istanbul 'coverage-summary.json' file in your repo
 
 ### `title`
-**Required** Title of the report 
 
+**Required** Title of the report
 
 ## Outputs
 
 ### `summary`
+
 Summary of the report in json format. sample:
+
 ```json
 {
-    "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
-    "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
-    "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
-    "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 }
+  "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
+  "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
+  "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 },
+  "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 0 }
 }
 ```
 
 ## Preparation
+
 Setup your test framework to use `Istanbul` to create coverage report as json file and thats it. just feed that file to this action as an input.
 
 ## Example usage

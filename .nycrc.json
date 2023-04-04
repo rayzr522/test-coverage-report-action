@@ -1,6 +1,6 @@
 {
-    "all": true,
-    "reporter": ["json-summary", "text"],
-    "extension": [".ts"],
-    "include": ["src/**/*.*"]
+  "all": true,
+  "reporter": ["json-summary", "text"],
+  "extension": [".ts"],
+  "include": ["src/**/*.*"]
 }

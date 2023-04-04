@@ -1,7 +1,7 @@
 name: 'PullRequest Test Coverage Report'
 description: 'Reports test coverage summary of each pull-requests touched files in the description'
 inputs:
-  token:  # id of input
+  token: # id of input
     description: 'GITHUB Token'
     required: true
   path:
@@ -17,5 +17,5 @@ runs:
   using: 'node12'
   main: 'dist/index.js'
 branding:
-  icon: 'align-left'  
+  icon: 'align-left'
   color: 'purple'

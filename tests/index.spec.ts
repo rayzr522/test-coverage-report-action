@@ -1,7 +1,7 @@
-import { run } from "../src/index";
+import { run } from '../src/index'
 
-describe("test index file", () => {
-    it("should exist", () => {
-        expect(run).toBeTruthy();
-    });
-});
+describe('test index file', () => {
+  it('should exist', () => {
+    expect(run).toBeTruthy()
+  })
+})
