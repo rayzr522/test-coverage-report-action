@@ -24,47 +24,20 @@ export function addCoverageReport(
   return res
 }
 
-export function calculateCoverage(
-  changedFiles: string[],
-  report: { [key: string]: Report }
-): Report | null {
-  const output: Report[] = []
+export function calculateCoverage(report: { [key: string]: Report }): Report {
   const reports = reportToArray(report)
-
-  changedFiles.forEach((cf) => {
-    const item = reports.find((r) =>
-      r.fileName.toLocaleLowerCase().endsWith(cf)
-    )
-    if (item) {
-      output.push(item.report)
-    }
-  })
-
-  if (!output.length) {
-    return null
-  }
-
-  return output.reduce((sum, item) => {
-    return addReport(sum, item)
-  })
+  return reports
+    .map((r) => r.report)
+    .reduce((sum, item) => {
+      return addReport(sum, item)
+    })
 }
 
 export function reportToArray(report: { [key: string]: Report }): ReportItem[] {
-  const reports: ReportItem[] = []
-  if (!report) {
-    return reports
-  }
-
-  const props = Object.getOwnPropertyNames(report)
-
-  props.forEach((prop) => {
-    reports.push({
-      fileName: prop,
-      report: report[prop],
-    })
-  })
-
-  return reports
+  return Object.entries(report).map(([fileName, report]) => ({
+    fileName,
+    report,
+  }))
 }
 
 export function reportToString(report: Report, title: string): string {
@@ -76,18 +49,14 @@ export function reportToString(report: Report, title: string): string {
   const coverage = `### ${title}
   | Type       |   #   |  %  |
   |------------|:-----:|:---:|
-  | Lines      |   ( ${report.lines.covered}     /${
-    report.lines.total
-  } )   | ${report.lines.pct.toFixed(2)}% |
-  | Functions  |   ( ${report.functions.covered} /${
-    report.functions.total
-  } )   | ${report.functions.pct.toFixed(2)}% |
-  | Statements |   ( ${report.statements.covered}/${
-    report.statements.total
-  } )   | ${report.statements.pct.toFixed(2)}% |
-  | Branches   |   ( ${report.branches.covered}  /${
-    report.branches.total
-  } )   | ${report.branches.pct.toFixed(2)}% |•`
+  | Lines      |   ( ${report.lines.covered}     /${report.lines.total
+    } )   | ${report.lines.pct.toFixed(2)}% |
+  | Functions  |   ( ${report.functions.covered} /${report.functions.total
+    } )   | ${report.functions.pct.toFixed(2)}% |
+  | Statements |   ( ${report.statements.covered}/${report.statements.total
+    } )   | ${report.statements.pct.toFixed(2)}% |
+  | Branches   |   ( ${report.branches.covered}  /${report.branches.total
+    } )   | ${report.branches.pct.toFixed(2)}% |•`
 
   return coverage
 }

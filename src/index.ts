@@ -22,9 +22,7 @@ export async function run() {
     }
 
     const octokit = github.getOctokit(inputs.token)
-    const files = await getPullRequestFiles(octokit, pr)
-    const report = loadReportFromSummaryFile(inputs.path, files)
-    if (!report) return
+    const report = loadReportFromSummaryFile(inputs.path)
     const coverage = reportToString(report, inputs.title)
 
     await updatePullRequestDescription(pr, octokit, coverage)
@@ -113,16 +111,13 @@ async function getPullRequestFiles(octokit: Octokit, pr: PullRequest) {
     .map((f) => f.filename)
 }
 
-function loadReportFromSummaryFile(
-  path: string,
-  files: string[]
-): Report | null {
+function loadReportFromSummaryFile(path: string): Report {
   const data = fs.readFileSync(
     `${process.env.GITHUB_WORKSPACE}/${path}`,
     'utf8'
   )
   const json = JSON.parse(data)
-  return calculateCoverage(files, json)
+  return calculateCoverage(json)
 }
 
 run()
